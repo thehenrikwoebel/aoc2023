@@ -1,0 +1,159 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int power(int base, int exponent) {
+    int out = base;
+    if(exponent == 0) {
+        return 1;
+    } else {
+        for(int i = 1; i < exponent;++i) {
+            out *= base;
+        }
+        return out;
+    }
+}
+
+vector<string> readFile(string path) {
+    vector<string> out;
+    string line;
+    ifstream file;
+    file.open(path);
+    if(file.is_open()) {
+        while(getline(file, line)) {
+            out.push_back(line);
+        }
+    }
+    file.close();
+    return out;
+}
+
+vector<int> getWinningNumbers(vector<string> file) {
+    file.shrink_to_fit();
+    string number = "";
+    vector<int> out;
+    for(int i = 0; i < file.size();++i) {
+        for(int j = 10; j < 42;++j) {
+            if(isdigit(file[i][j])) {
+                number += file[i][j];
+            } else if(number.length() > 0 && file[i][j] == ' '){
+                //cout << number << endl;
+                out.push_back(stoi(number));
+                number = "";
+            }
+        }
+        number = "";
+    }
+    return out;
+}
+
+vector<int> getNumbers(vector<string> file) {
+    file.shrink_to_fit();
+    vector<int> out;
+    string number = "";
+    for(int i = 0; i < file.size();++i) {
+        for(int j = 42; j < 116;++j) {
+            if(isdigit(file[i][j])) {
+                number += file[i][j];
+            } else if(number.length() > 0) {
+                //cout << number << endl;
+                out.push_back(stoi(number));
+                number = "";
+            }
+        }
+        //cout << number << endl;
+        out.push_back(stoi(number));
+        number = "";
+    }
+    return out;
+}
+
+vector<vector<int>> cutWinningNumbers(vector<int> wNumbers) {
+    wNumbers.shrink_to_fit();
+    vector<vector<int>> out;
+    vector<int> temp;
+    for(int i = 0; i < wNumbers.size();++i) {
+        //cout << wNumbers[i] << endl;
+        temp.push_back(wNumbers[i]);
+        if((i+1) % 10 == 0) {
+            //cout << "Neue Zeile!" << endl;
+            out.push_back(temp);
+            temp = {};
+        }
+    }
+    return out;
+}
+
+bool checkNumber(vector<int> wNumbers, int number) {
+    wNumbers.shrink_to_fit();
+    for(int i = 0; i < wNumbers.size();++i) {
+        if(wNumbers[i] == number) {
+            //cout << "Winning Number!";
+            //cout << number << endl;
+            return true;
+        }
+    }
+    return false;
+}
+
+vector<vector<int>> modifyNumbers(vector<int> numbers) {
+    vector<vector<int>> out;
+    vector<int> temp;
+    int row = 0;
+    for(int i = 0; i < numbers.size();++i) {
+        temp.push_back(numbers[i]);
+        temp.push_back(row);
+        out.push_back(temp);
+        temp.clear();
+        if((i+1) % 25 == 0) {
+            ++row;
+        }
+    }
+    return out;
+} // set the row of the number behind every number
+
+int compareNumbers(vector<vector<int>> wNumbers, vector<vector<int>> numbers) {
+    wNumbers.shrink_to_fit();
+    numbers.shrink_to_fit();
+    vector<vector<int>> nums = numbers;
+    int out = 0;
+    vector<int> correctOnes;
+    int number = -1;
+    int it = 0;
+    string temp = "";
+    for(int i = 0; i < numbers.size();++i) {
+        if(checkNumber(wNumbers[numbers[i][1]], numbers[i][0])) {
+            ++number;
+        }
+        if((i+1) % 25 == 0 && i != 0) {
+            ++out;
+            if(number > -1) {
+                for(int k = 0; k < number + 1;++k) {
+                    
+                }
+                cout << number << endl;
+                cout << i/24 << endl;
+                correctOnes.push_back(number);
+            }
+            number = -1;
+        }
+    }
+    cout << out << endl;
+    return out;
+}
+
+int main() {
+    vector<string> cards = readFile("input.txt");
+    vector<vector<int>> wNum = cutWinningNumbers(getWinningNumbers(cards));
+    vector<vector<int>> winningNumbers = cutWinningNumbers(getWinningNumbers(cards));
+    vector<vector<int>> anumbers = modifyNumbers(getNumbers(cards));
+    //int it = 0;
+    //for(int j = 24*4 + 3; j > 24*3 + 2;--j) {
+        //cout << anumbers[j][0] << ",";
+        //++it;
+    //}
+    compareNumbers(winningNumbers, anumbers);
+    return 0;
+}

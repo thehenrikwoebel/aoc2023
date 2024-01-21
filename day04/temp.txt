@@ -1,0 +1,10 @@
+for(int j = 24 + nums[i + k + 1][1] - 1; j >= 0 + nums[i + k + 1][1] - 2;--j) {
+                        numbers.emplace(numbers.begin() + i + k + 1 + it, nums[i + k + 1 - j]);
+                        ++it;
+                        temp += to_string(nums[i + k + 1 - j][0]);
+                        temp += ",";
+                        if(j == 0) {
+                            temp += "\n";
+                            cout << temp << endl;
+                        }
+                    }
